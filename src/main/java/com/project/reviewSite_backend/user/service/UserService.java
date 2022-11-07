@@ -3,6 +3,7 @@ package com.project.reviewSite_backend.user.service;
 import com.project.reviewSite_backend.exception.PasswordNotMatchException;
 import com.project.reviewSite_backend.exception.UserNotFoundException;
 import com.project.reviewSite_backend.user.CreateForm;
+import com.project.reviewSite_backend.user.UserRole;
 import com.project.reviewSite_backend.user.dao.UserRepository;
 import com.project.reviewSite_backend.user.domain.User;
 import com.project.reviewSite_backend.user.dto.UserDto;
@@ -28,6 +29,7 @@ public class UserService {
                 .userid(createForm.getUserid())
                 .password(passwordEncoder.encode(createForm.getPassword1()))
                 .email(createForm.getEmail())
+                .userRole(UserRole.USER)
                 .build();
 
         userRepository.save(user);
@@ -44,6 +46,15 @@ public class UserService {
             throw new PasswordNotMatchException(String.format("password do not match"));
         }
         throw new UserNotFoundException(String.format("%s not found", user.getUserid()));
+    }
+
+    public User deleteById(User user) {
+        Optional<User> deleteOpUser = userRepository.findById(user.getId());
+
+        if (deleteOpUser.isPresent()) {
+            User deletedUser = deleteOpUser.get();
+            return deletedUser;
+        } throw new UserNotFoundException(String.format("%s not found", user.getId()));
     }
 
     public List<UserDto> getAllUsers() {
@@ -74,16 +85,18 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean modifynickname(User user) {
+    public User modifynickname(User user) {
 
-        boolean b;
+        User b;
 
         if (userRepository.save(user) == null) {
-            b = false;
+            b = null;
         } else {
-            b = true;
+            b = user;
         }
 
         return b;
     }
+
+
 }

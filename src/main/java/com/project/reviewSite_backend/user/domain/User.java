@@ -1,8 +1,13 @@
 package com.project.reviewSite_backend.user.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.reviewSite_backend.answer.Answer;
+import com.project.reviewSite_backend.user.UserRole;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +21,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String userid;
 
     @Column(nullable = false)
@@ -30,4 +35,8 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
 }
